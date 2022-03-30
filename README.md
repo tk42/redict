@@ -6,6 +6,8 @@ This wrapper is based on [Redis Best Practices](https://redis.com/redis-best-pra
 
 ## Introduction
 
+Requirement: Go >= 1.18
+
 ```
 import "github.com/tk42/redict"
 ```
@@ -21,15 +23,15 @@ const (
 )
 
 c := Client(
-	ClientConfig{
-        Client.Redigo,
-		RedisNamespace(COUNTRY, "western"),
-		// RedisNamespace(COUNTRY), // No key. This case is prohibited.
-		// RedisNamespace("countiry"), // OK
-        host,
+	Client.Redigo,
+	RedisNamespace(COUNTRY, "western"),
+	// RedisNamespace(COUNTRY), // No key. This case is prohibited.
+	// RedisNamespace("countiry"), // OK
+	&OptionalConfig{
+		host,
 		port,
 		isMock,
-        expire,
+		expire,
 		maxIdleConnections,
 		maxActiveConnections,
 	}
@@ -45,11 +47,11 @@ province.Sort(FIELD_ACENDING) // {"jp": 47, "us": 51} // j < u
 province.Sort(VALUE_ACENDING) // {"jp": 47, "us": 51} // 47 < 51
 
 president := c.HashMap("president")
-president.CreateEx({
+president.Create({
 	"us": "Joe Biden",
 	"jp": "Humio Kishida",
 }, 86400 * time.Second)
-president.UpdateEx("us", "Donald Trump", time.Second)
+president.Update("us", "Donald Trump", time.Second)
 
 foundation := c.HashMap("foundation") // HashMap can be created by struct also.
 type Foundation {
@@ -57,7 +59,7 @@ type Foundation {
     Year: int,
 }
 
-foundation.CreateEx({
+foundation.Create({
 	"us": Foundation{
         Founder: "G. Washington",
         Year: 1776,
